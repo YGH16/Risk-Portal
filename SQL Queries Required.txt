@@ -1,0 +1,13 @@
+SQL Queries Required For The Risk Dashboard:
+
+1. Open Exposure PnL for: Account, Symbol and Group
+2. Account Type Statistics for: Equity, Exposure and Balance
+3. Symbol Exposure
+4. Top 10 PnL - (MAMs, NoMAMs)
+5. Bottom 10 PnL - - (MAMs, NoMAMs)
+6. Suspicious Account - (Account no, Equity, Open PnL, PnL t-1, PnL)
+7. Tick Monitoring - (Come Back To)
+8. Top 10 Client Exposure
+9 Close Trades PnL - (Between 2 given dates)
+10. AIF Sync - (Shows AIF Accounts with Open Exposure)
+11. FMT Sync - (Shows FMT Accounts with Open Exposure)

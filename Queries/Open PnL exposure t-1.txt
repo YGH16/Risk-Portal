@@ -1,0 +1,6 @@
+SELECT round(sum(if(isnull(s.Mid),1,s.mid)*d.profit),2) Floating FROM mt5_live.mt5_daily d
+join (select login, max(datetime) datetime from mt5_live.mt5_daily group by login) d1 on d1.login = d.login and d1.Datetime=d.datetime
+left join (SELECT symbol,(ask+bid)/2 mid FROM fxbackoffice.mt4_prices where right(symbol,1)='q' and (symbol='eurusdq' or symbol='gbpusdq')) s on left(s.symbol,3) = left(d.currency,3)
+
+where d.login > '200000' and d.group not regexp 'test|demo|sub'
+and from_unixtime(d.Datetime) = from_unixtime(d1.datetime)

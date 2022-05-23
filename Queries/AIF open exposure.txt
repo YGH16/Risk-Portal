@@ -1,0 +1,5 @@
+SELECT t.login,round(sum(if(t.close_TIME<'2000',if(cmd=1,t.lots*-1,t.lots),0)),2) Volume from fxbackoffice.mt4_trades t
+join fxbackoffice.mt4_users u on u.login = t.login 
+where t.cmd<2 and t.login>'80000' 
+and u.group regexp 'aif'  
+group by t.login

@@ -1,0 +1,20 @@
+select `account type`,sum(Equity) Equity,sum(Balance) Balance,sum(if(isnull(Exposure),0,exposure)) Exposure from (
+select u.login,u.group, if(u.group regexp 'aif','AIF',if(u.group like '%mam%_2%','MAM B-Book',if(u.group like '%mam%_%','MAM A-Book',if(u.group regexp 'pro', 'Pro',if(u.group regexp '2_','Retail B-Book','Retail A-Book'))))) 'Account Type',round(sum(if(u.group regexp '6_aif|1_aif',0,u.equity)),2) Equity,round(sum(if(u.group regexp '6_aif|1_aif',0,u.Balance)),2) Balance,round(sum(t.lots),2) Exposure from fxbackoffice.mt4_users u 
+left join( select login,sum(if(cmd=1,lots*-1,lots)) lots from fxbackoffice.mt4_trades where (login>'200000' or login between '80001' and '80007') and close_time < '2000' and cmd<2 group by login) t on u.login = t.login
+#right join (select login,u.group,equity,balance from fxbackoffice.mt4_users u where u.group like '%sub_aif%') u1 on u1.login = u.login
+where u.group regexp 'real|sub_aif' and u.group not regexp 'test|demo|sub|flavio|alphacore'  and (u.login>'200000' or u.login between '80001' and '80007') and u.isdeleted=0
+group by `account type` 
+union all
+select u.login,u.group, if(u.group regexp 'aif','AIF',if(u.group like '%mam%_2%','MAM B-Book',if(u.group like '%mam%_%','MAM A-Book',if(u.group regexp 'pro', 'Pro',if(u.group regexp '2_','Retail B-Book','Retail A-Book'))))) 'Account Type',round(sum(if(u.group regexp '6_aif|1_aif',0,u.equity)),2) Equity,round(sum(if(u.group regexp '6_aif|1_aif',0,u.Balance)),2) Balance,round(sum(t.lots),2) Exposure from fxbackoffice.mt4_users u 
+left join( select login,sum(if(cmd=1,lots*-1,lots)) lots from fxbackoffice.mt4_trades where (login>'200000' or login between '80001' and '80007') and close_time < '2000' and cmd<2 group by login) t on u.login = t.login
+#right join (select login,u.group,equity,balance from fxbackoffice.mt4_users u where u.group like '%sub_aif%') u1 on u1.login = u.login
+where u.group regexp 'sub_aif' and u.group not regexp 'test|demo|flavio|alphacore'  and (u.login>'200000' or u.login between '80001' and '80007') and u.isdeleted=0
+group by `account type`
+
+union all
+select u.login,u.group, 'MAM B-Book' as 'Account Type',round(sum(if(u.group regexp '6_aif|1_aif',0,u.equity)),2) Equity,round(sum(if(u.group regexp '6_aif|1_aif',0,u.Balance)),2) Balance,round(sum(t.lots),2) Exposure from fxbackoffice.mt4_users u 
+left join( select login,sum(if(cmd=1,lots*-1,lots)) lots from fxbackoffice.mt4_trades where (login>'200000' or login between '80001' and '80007') and close_time < '2000' and cmd<2 group by login) t on u.login = t.login
+#right join (select login,u.group,equity,balance from fxbackoffice.mt4_users u where u.group like '%sub_aif%') u1 on u1.login = u.login
+ where u.group regexp 'mam_flavio|mam_alphacore' and u.group not regexp 'test|demo'  and (u.login>'200000' or u.login between '80001' and '80007') and u.isdeleted = 0
+group by `account type`) as a
+group by a.`account type`

@@ -1,0 +1,6 @@
+SELECT date_format(t.close_time,"%Y-%m-%d") Date,sum(t.totalprofit) Total_Closed_PnL from fxbackoffice.mt4_trades t
+join fxbackoffice.mt4_users u on u.login = t.login 
+where t.close_time >= '2022-01-01' and t.close_time < '2022-02-01' + interval 1 day and t.cmd<2 
+and u.group not regexp 'sub|test|demo' and t.login >'200000' 
+group by date_format(t.close_time,"%Y-%M-%D")
+order by t.close_time asc
